@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Código de Juego - Kahoot!</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+    <style>
+        .game-code-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 80vh;
+            text-align: center;
+        }
+        
+        .game-title {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: #46178f;
+        }
+        
+        .qr-code {
+            margin: 20px 0;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .pin-code {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #46178f;
+            letter-spacing: 5px;
+            margin: 20px 0;
+        }
+        
+        .instructions {
+            margin-top: 30px;
+            color: #555;
+            max-width: 500px;
+        }
+        
+        .btn-container {
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <div class="big-wrapper">
+            <header>
+                <div class="container">
+                    <div class="logo">
+                        <img src="/img/logo.png" alt="Logo">
+                        <h3>Kahoot</h3>
+                    </div>
+                    <div class="links">
+                        <ul>
+                            <li><a href="/" class="btn">Atrás</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </header>
+            
+            <div class="game-code-container">
+                <h2 class="game-title"><%= form.title %></h2>
+                
+                <div id="qr-code" class="qr-code"></div>
+                
+                <div class="pin-code"><%= gameCode %></div>
+                
+                <p class="instructions">
+                    Comparte este código con los jugadores para que se unan a la partida.
+                    
+                </p>
+                
+                <div class="btn-container">
+                    <button onclick="window.location.href='/games/<%= gameId %>/host'" class="btn">
+                        Iniciar Partida
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+    <img src="/img/shape.png" alt="" class="shape"/>
+
+    <script>
+        // Generar QR code
+        const qrCode = new QRCode(document.getElementById("qr-code"), {
+            text: "<%= gameCode %>",
+            width: 200,
+            height: 200,
+            colorDark: "#46178f",
+            colorLight: "#ffffff",
+            correctLevel: QRCode.CorrectLevel.H
+        });
+    </script>
+</body>
+</html>

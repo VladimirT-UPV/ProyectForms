@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Host de Partida - Kahoot!</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <style>
+        .game-host-container {
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .game-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        
+        .game-code {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #46178f;
+        }
+        
+        .players-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .player-card {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .player-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin: 0 auto 10px;
+        }
+        
+        .start-game-btn {
+            margin-top: 30px;
+            padding: 15px 30px;
+            background-color: #46178f;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <div class="big-wrapper">
+            <header>
+                <div class="container">
+                    <div class="logo">
+                        <img src="/img/logo.png" alt="Logo">
+                        <h3>Kahoot</h3>
+                    </div>
+                    <div class="links">
+                        <ul>
+                            <li><a href="/" class="btn">Salir</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </header>
+            
+            <div class="game-host-container">
+                <div class="game-info">
+                    <h1><%= game.form_title %></h1>
+                    <div class="game-code">Código: <%= game.game_code %></div>
+                </div>
+                
+                <h2>Jugadores (<%= players.length %>)</h2>
+                <div class="players-container">
+                    <% players.forEach(player => { %>
+                        <div class="player-card">
+                            <img src="<%= player.avatar %>" class="player-avatar">
+                            <h3><%= player.nickname %></h3>
+                            <p>Puntos: <%= player.score %></p>
+                        </div>
+                    <% }); %>
+                </div>
+                
+                <button class="start-game-btn">Comenzar Partida</button>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

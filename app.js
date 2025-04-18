@@ -432,6 +432,51 @@ app.post('/forms/:id/save', requireLogin, async (req, res) => {
   }
 });
  
+// Ruta para crear un nuevo juego y mostrar el código QR
+app.get('/games/create/:formId', requireLogin, async (req, res) => {
+  try {
+    const { formId } = req.params;
+    const userId = req.session.userId;
+
+    // Verificar que el formulario pertenece al usuario
+    const [form] = await pool.execute(
+      `SELECT * FROM forms WHERE form_id = ? AND user_id = ?`,
+      [formId, userId]
+    );
+
+    if (form.length === 0) {
+      return res.status(404).render('error', { message: 'Formulario no encontrado' });
+    }
+
+    // Generar código de juego (6-7 dígitos)
+    const gameCode = Math.floor(100000 + Math.random() * 9000000).toString().substring(0, 7);
+
+    // Crear la partida en la base de datos
+    const [result] = await pool.execute(
+      `INSERT INTO games (game_code, form_id, host_id, status)
+       VALUES (?, ?, ?, 'waiting')`,
+      [gameCode, formId, userId]
+    );
+
+    const gameId = result.insertId;
+
+    // Renderizar la vista con el código QR
+    res.render('game-code', {
+      form: {
+        form_id: form[0].form_id,
+        title: form[0].title,
+        imagen_path: form[0].imagen_path ? `/img/forms/${form[0].imagen_path}` : '/img/default-form.png'
+      },
+      gameCode,
+      gameId
+    });
+
+  } catch (error) {
+    console.error('Error al crear partida:', error);
+    res.status(500).render('error', { message: 'Error al crear la partida' });
+  }
+});
+
 //!  INICIAR SERVIDOR
  
 app.listen(3000, () => {
