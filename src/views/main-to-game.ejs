@@ -165,13 +165,13 @@
                 <div class="carousel-container">
                     <div class="carousel">
                         <% forms.forEach(form => { %>
-                            <div class="form-card" onclick="window.location.href='/forms/<%= form.form_id %>/edit'">
-                                <% if (form.imagen_path) { %>
-                                    <img src="<%= form.imagen_path %>" alt="<%= form.title %>" class="form-image">
-                                <% } %>
-                                <div class="form-title"><%= form.title %></div>
+                            <div class="form-card" onclick="window.location.href='/games/create/<%= form.id %>'">
+                              <% if (form.image) { %>
+                                <img src="<%= form.image %>" alt="<%= form.title %>" class="form-image">
+                              <% } %>
+                              <div class="form-title"><%= form.title %></div>
                             </div>
-                        <% }); %>
+                          <% }); %>
                         
                         <div class="add-form" onclick="window.location.href='/forms/new'">
                             +
