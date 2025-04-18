@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Esperando inicio - Kahoot!</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <style>
+        .waiting-container {
+            text-align: center;
+            padding: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .game-code {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #46178f;
+            margin: 20px 0;
+        }
+        
+        .player-info {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        
+        .player-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin-right: 20px;
+        }
+        
+        .player-name {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .waiting-message {
+            margin-top: 40px;
+            font-size: 1.2rem;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="waiting-container">
+        <h1>Esperando a que el host inicie el juego</h1>
+        <div class="game-code">Código: <%= gameCode %></div>
+        
+        <div class="player-info">
+            <img src="<%= player.avatar %>" class="player-avatar">
+            <div class="player-name"><%= player.nickname %></div>
+        </div>
+        
+        <div class="waiting-message">
+            <p>Cuando el host inicie la partida, comenzará automáticamente.</p>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+        const gameCode = '<%= gameCode %>';
+        
+        // Unirse a la sala del juego
+        socket.emit('joinGameRoom', gameCode);
+        
+        // Escuchar inicio del juego
+        socket.on('startGame', () => {
+            window.location.href = `/games/<%= gameId %>/play`;
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kahoot!</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <script src="/js/js.js"></script>
+</head>
+<body>
+    <main>
+        <div class="big-wrapper" id="all">
+            <img src="/img/shape.png" alt="" class="shape"/>
+            <header>
+                <div class="container">
+                    <div class="logo">
+                        <img src="/img/logo.png" alt="Logo">
+                        <h3>Kahoot</h3>
+                    </div>
+                    <div class="links">
+                        <ul>
+                            <% if (user) { %>
+                                <li><a href="/logout" class="btn">Cerrar Sesión</a></li>
+                            <% } else { %>
+                                <li><a href="#" class="btn" onclick="modal()">Iniciar Sesión</a></li>
+                            <% } %>
+                        </ul>
+                    </div>
+                </div>
+            </header>
+            <div class="showcase-area">
+                <div class="container">
+                    <div class="left">
+                        <div class="big-title">
+                            <h1>Comienza el aprendizaje,</h1>
+                            <h1>A traves de la diversión</h1>
+                        </div>
+                        <p class="text">
+                            Plataforma interactiva de aprendizaje a traves
+                            de quizes, asegurando la diversión en compañía
+                            de tus amigos.
+                        </p>
+                        <div class="container">
+                            <div class="left">
+                                <div class="cta">
+                                    <a href="/maintogame" class="btn">Jugar</a>
+                                </div>
+                            </div>
+                            <div class="right">
+                                <div class="cta">
+                                    <% if (user) { %>
+                                        <a href="/main" class="btn">Crear</a>
+                                    <% } else { %>
+                                        <a href="#" class="btn" onclick="alert('Debes iniciar sesión para crear quizzes')">Crear</a>
+                                    <% } %>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="right">
+                        <img src="/img/ilu3.gif" alt="Ilu Image" class="ilu"/>
+                    </div>
+                </div>
+            </div>
+
+            <div class="botton-area">
+                <div class="container">
+                    
+                </div>
+            </div>
+        </div> 
+
+       <!-- INICIO DE SESION -->
+        <section id="overlay">
+            <aside>
+                <h2>Iniciar Sesion</h2>
+                <br>
+                <form action="/login" method="POST">
+                    <a onclick="modal()" href="" class="close">
+                        <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><defs><style>.cls-1{fill:none;stroke:#7cc8f5;stroke-linecap:round;stroke-linejoin:round;stroke-width:2px;}</style></defs><title/><g id="cross"><line class="cls-1" x1="7" x2="25" y1="7" y2="25"/><line class="cls-1" x1="7" x2="25" y1="25" y2="7"/></g></svg> 
+                    </a>
+                    <% if (error === 'credenciales') { %>
+                        <p style="color:red;">Usuario o contraseña incorrectos</p>
+                    <% } %>
+                    <h4>Usuario</h4>
+                    <input type="text" name="username" required/>
+                    <h4>Contraseña</h4>
+                    <input type="password" name="password" required/>
+                    <br>
+                    <button type="submit" id="btnfm">Ingresar</button>
+                    <br><br><br>
+                    <hr>
+                    <br>
+                    <p class="text2">¿No tienes una cuenta? <a href="#" onclick="modal2()">Regístrate</a></p>
+                </form>
+            </aside>
+        </section> 
+
+        <!-- INICIO DE REGISTRO -->
+        <section id="overlay2">
+            <aside>
+                <h2>Registrarse</h2>
+                <br>
+                <form action="/register" method="POST">
+                    <a onclick="modal2()" href="" class="close">
+                        <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><defs><style>.cls-1{fill:none;stroke:#7cc8f5;stroke-linecap:round;stroke-linejoin:round;stroke-width:2px;}</style></defs><title/><g id="cross"><line class="cls-1" x1="7" x2="25" y1="7" y2="25"/><line class="cls-1" x1="7" x2="25" y1="25" y2="7"/></g></svg> 
+                    </a>
+                    <h4>Usuario</h4>
+                    <input type="text" name="username" required/>
+                    <h4>Contraseña</h4>
+                    <input type="password" name="password" required/>
+                    <h4>Correo Electrónico</h4>
+                    <input type="email" name="email" required/>
+                    <br>
+                    <button type="submit" id="btnfm">Registrarse</button>
+                </form>
+            </aside>
+        </section> 
+    </main>
+
+    <!-- Mostrar alertas de error -->
+    <% if (error === 'no-sesion') { %>
+        <script>
+            alert('Debes iniciar sesión para acceder a esta función');
+            modal();
+        </script>
+    <% } %>
+</body>
+</html>

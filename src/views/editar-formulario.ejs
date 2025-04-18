@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Formulario</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <script src="/js/js.js"></script>
+    <style>
+        .questions-container {
+            max-height: 70vh;
+            overflow-y: auto;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+        .question-box {
+            text-align: center; 
+            margin: 20px auto; 
+            max-width: 600px; 
+            border: 1px solid #ccc; 
+            padding: 20px; 
+            border-radius: 15px;
+        }
+        .error-message {
+            color: red;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <div class="big-wrapper" id="all">
+            <header>
+                <div class="container">
+                    <div class="logo">
+                        <img src="/img/logo.png" alt="Logo">
+                        <h3>Kahoot</h3>
+                    </div>
+                    <div class="links">
+                        <ul>
+                            <li><a href="/main" class="btn">Salir</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </header>
+            <br>
+
+            <div class="container" style="background-color: white; padding-bottom:20px; border-radius: 20px;">
+                <form action="/forms/<%= formId %>/save" method="POST" class="game" onsubmit="return validateForm()">
+                    <div class="questions-container" id="questionsContainer">
+                        <% for(let i = 0; i < questions.length; i++) { %>
+                            <div class="question-box" data-question-index="<%= i %>">
+                                <h3>Pregunta <%= i + 1 %></h3>
+                                <input type="text" name="questions[<%= i %>][text]" value="<%= questions[i].text || '' %>" 
+                                       placeholder="Ingresa la pregunta" required style="width:100%; margin-bottom: 15px;" />
+                                
+                                <% for (let j = 0; j < 4; j++) { %>
+                                    <div style="display: flex; align-items: center; margin: 10px 0;">
+                                        <input type="checkbox" name="questions[<%= i %>][answers][<%= j %>][correct]" value="true" style="margin-right: 10px;" 
+                                            <%= questions[i].answers[j]?.correct ? 'checked' : '' %>>
+                                        <input type="text" name="questions[<%= i %>][answers][<%= j %>][text]" value="<%= questions[i].answers[j]?.text || '' %>" 
+                                            placeholder="Escribe una respuesta" style="flex: 1;" />
+                                    </div>
+                                <% } %>
+                                <div class="error-message" id="error-<%= i %>"></div>
+                            </div>
+                        <% } %>
+                    </div>
+
+                    <center>
+                        <button type="submit" name="action" value="save" class="btn">Guardar formulario</button>
+                        <button type="submit" name="action" value="add" class="btn" style="margin-left: 10px;">Agregar pregunta</button>
+                    </center>
+                </form>
+            </div>
+        </div>
+    </main>
+    <img src="/img/shape.png" alt="" class="shape"/>
+
+    <script>
+        function validateForm() {
+            const questionBoxes = document.querySelectorAll('.question-box');
+            let isValid = true;
+            
+            questionBoxes.forEach((box, i) => {
+                const questionInput = box.querySelector('input[type="text"][name*="[text]"]');
+                const answerInputs = box.querySelectorAll('input[type="text"][name*="[answers]"]');
+                const checkboxes = box.querySelectorAll('input[type="checkbox"]');
+                const errorElement = document.getElementById(`error-${i}`);
+                
+                // Validar que la pregunta no esté vacía
+                if (questionInput.value.trim() === '') {
+                    errorElement.textContent = "El texto de la pregunta es obligatorio.";
+                    isValid = false;
+                    return;
+                }
+                
+                // Contar respuestas completadas
+                const completedAnswers = [];
+                answerInputs.forEach((input, j) => {
+                    if (input.value.trim() !== '') {
+                        completedAnswers.push({
+                            text: input.value.trim(),
+                            isCorrect: checkboxes[j].checked
+                        });
+                    }
+                });
+                
+                // Validar cantidad de respuestas
+                if (completedAnswers.length < 2) {
+                    errorElement.textContent = "Debes completar al menos 2 respuestas.";
+                    isValid = false;
+                } 
+                // Validar cuando hay exactamente 2 respuestas
+                else if (completedAnswers.length === 2) {
+                    const hasCorrect = completedAnswers.some(a => a.isCorrect);
+                    const hasIncorrect = completedAnswers.some(a => !a.isCorrect);
+                    
+                    if (!hasCorrect || !hasIncorrect) {
+                        errorElement.textContent = "Debe haber una respuesta correcta y una incorrecta.";
+                        isValid = false;
+                    } else {
+                        errorElement.textContent = "";
+                    }
+                }
+                // Validar cuando hay más de 2 respuestas
+                else {
+                    const correctCount = completedAnswers.filter(a => a.isCorrect).length;
+                    if (correctCount === 0) {
+                        errorElement.textContent = "Debe haber al menos una respuesta correcta.";
+                        isValid = false;
+                    } else {
+                        errorElement.textContent = "";
+                    }
+                }
+            });
+            
+            return isValid;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,116 @@
+<% if (typeof success !== 'undefined' && success === 'form-created') { %>
+    <div class="alert success">
+        ¡Formulario creado con éxito! Haz clic en él para agregar preguntas.
+    </div>
+<% } %>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kahoot!</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <style>
+        /* ESTILOS DEL CARRUSEL */
+        .carousel-container {
+            width: 100%;
+            overflow-x: auto;
+            padding: 20px 0;
+            white-space: nowrap;
+        }
+        
+        .carousel {
+            display: inline-flex;
+            gap: 20px;
+            padding: 0 20px;
+        }
+        
+        .form-card, .add-form {
+            flex: 0 0 250px;
+            height: 150px;
+            background: white;
+            border-radius: 10px;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: transform 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .form-card:hover, .add-form:hover {
+            transform: translateY(-5px);
+        }
+        
+        .form-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .form-title {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 10px;
+            text-align: center;
+            font-size: 1rem;
+        }
+        
+        .add-form {
+            background: #f0f0f0;
+            font-size: 2rem;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <div class="big-wrapper" id="all">
+            <header>
+                <div class="container">
+                    <div class="logo">
+                        <img src="/img/logo.png" alt="Logo">
+                        <h3>Kahoot</h3>
+                    </div>
+                    <div class="links">
+                        <ul>
+                            <li><a href="/" class="btn">Atras</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </header>
+            <div class="showcase-area">
+                <div class="container">
+                    <h6>Creaciones</h6>
+                </div>
+                <div class="carousel-container">
+                    <div class="carousel">
+                        <% forms.forEach(form => { %>
+                            <div class="form-card" onclick="window.location.href='/forms/<%= form.form_id %>/edit'">
+                                <% if (form.image_path) { %>
+                                    <img src="<%= form.image_path %>" alt="<%= form.title %>" class="form-image">
+                                <% } %>
+                                <div class="form-title"><%= form.title %></div>
+                                <% if (form.is_public) { %>
+                                    <div class="public-badge">Público</div>
+                                <% } %>
+                            </div>
+                        <% }); %>
+                        
+                        <div class="add-form" onclick="window.location.href='/forms/new'">
+                            +
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <img src="/img/shape.png" alt="" class="shape"/>
+</body>
+</html>

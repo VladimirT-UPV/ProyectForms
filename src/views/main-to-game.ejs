@@ -1,0 +1,254 @@
+<% if (typeof success !== 'undefined' && success === 'form-created') { %>
+    <div class="alert success">
+        ¡Formulario creado con éxito! Haz clic en él para agregar preguntas.
+    </div>
+<% } %>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kahoot!</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <style>
+        /* ESTILOS DEL CARRUSEL */
+        .carousel-container {
+            width: 100%;
+            overflow-x: auto;
+            padding: 20px 0;
+            white-space: nowrap;
+        }
+        
+        .carousel {
+            display: inline-flex;
+            gap: 20px;
+            padding: 0 20px;
+        }
+        
+        .form-card, .add-form {
+            flex: 0 0 250px;
+            height: 150px;
+            background: white;
+            border-radius: 10px;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: transform 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .form-card:hover, .add-form:hover {
+            transform: translateY(-5px);
+        }
+        
+        .form-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .form-title {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 10px;
+            text-align: center;
+            font-size: 1rem;
+        }
+        
+        .add-form {
+            background: #f0f0f0;
+            font-size: 2rem;
+            color: #555;
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 500px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: black;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .avatar-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .avatar-option {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .avatar-option:hover, .avatar-option.selected {
+            border-color: #46178f;
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <div class="big-wrapper" id="all">
+            <header>
+                <div class="container">
+                    <div class="logo">
+                        <img src="/img/logo.png" alt="Logo">
+                        <h3>Kahoot</h3>
+                    </div>
+                    <div class="links">
+                        <ul>
+                            <li><a href="/" class="btn">Atrás</a></li>
+                            <li><button id="joinGameBtn" class="btn">Unir a juego</button></li>
+                        </ul>
+                    </div>
+                </div>
+            </header>
+            <div class="showcase-area">
+                <div class="container">
+                    <h6>Creaciones</h6>
+                </div>
+                <div class="carousel-container">
+                    <div class="carousel">
+                        <% forms.forEach(form => { %>
+                            <div class="form-card" onclick="window.location.href='/forms/<%= form.form_id %>/edit'">
+                                <% if (form.imagen_path) { %>
+                                    <img src="<%= form.imagen_path %>" alt="<%= form.title %>" class="form-image">
+                                <% } %>
+                                <div class="form-title"><%= form.title %></div>
+                            </div>
+                        <% }); %>
+                        
+                        <div class="add-form" onclick="window.location.href='/forms/new'">
+                            +
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <img src="/img/shape.png" alt="" class="shape"/>
+
+    <!-- Modal para unirse a juego -->
+    <div id="joinGameModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Unirse a Juego</h2>
+            <form id="joinGameForm" action="/join-game" method="POST">
+                <div class="form-group">
+                    <label for="gameCode">Código del Juego:</label>
+                    <input type="text" id="gameCode" name="gameCode" required placeholder="Ingresa el código PIN">
+                </div>
+                <div class="form-group">
+                    <label for="nickname">Nickname:</label>
+                    <input type="text" id="nickname" name="nickname" required placeholder="Elige tu nombre de jugador">
+                </div>
+                <div class="form-group">
+                    <label>Selecciona tu avatar:</label>
+                    <div class="avatar-options">
+                        <img src="/img/avatars/avatar1.png" class="avatar-option" data-avatar="1">
+                        <img src="/img/avatars/avatar2.png" class="avatar-option" data-avatar="2">
+                        <img src="/img/avatars/avatar3.png" class="avatar-option" data-avatar="3">
+                        <img src="/img/avatars/avatar4.png" class="avatar-option" data-avatar="4">
+                    </div>
+                    <input type="hidden" id="selectedAvatar" name="avatar" value="1">
+                </div>
+                <button type="submit" class="btn">Unirse</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Manejo del modal
+        const modal = document.getElementById("joinGameModal");
+        const btn = document.getElementById("joinGameBtn");
+        const span = document.getElementsByClassName("close")[0];
+        
+        btn.onclick = function() {
+            modal.style.display = "block";
+        }
+        
+        span.onclick = function() {
+            modal.style.display = "none";
+        }
+        
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+
+        // Selección de avatar
+        const avatarOptions = document.querySelectorAll('.avatar-option');
+        const selectedAvatarInput = document.getElementById('selectedAvatar');
+        
+        avatarOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                // Remover selección previa
+                avatarOptions.forEach(opt => opt.classList.remove('selected'));
+                
+                // Seleccionar nuevo avatar
+                this.classList.add('selected');
+                selectedAvatarInput.value = this.dataset.avatar;
+            });
+        });
+
+        // Seleccionar el primer avatar por defecto
+        avatarOptions[0].classList.add('selected');
+    </script>
+</body>
+</html>

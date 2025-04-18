@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lobby de Juegos - Kahoot</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <style>
+        .game-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+        .game-card {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        .game-image {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+        .game-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+        }
+        .game-code {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #46178f;
+        }
+        .players-count {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+        .new-game-btn {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <div class="big-wrapper">
+            <header>
+                <div class="container">
+                    <div class="logo">
+                        <img src="/img/logo.png" alt="Logo">
+                        <h3>Kahoot</h3>
+                    </div>
+                    <div class="links">
+                        <ul>
+                            <li><a href="/main" class="btn">Atrás</a></li>
+                            <li><a href="/joingame" class="btn">Unirse a Juego</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </header>
+
+            <% if (success) { %>
+                <div class="alert success">
+                    <%= success %>
+                </div>
+            <% } %>
+            <% if (error) { %>
+                <div class="alert error">
+                    <%= error %>
+                </div>
+            <% } %>
+
+            <div class="container">
+                <h1>Tus Juegos Disponibles</h1>
+                <div class="game-container">
+                    <% forms.forEach(form => { %>
+                        <div class="game-card">
+                            <% if (form.image) { %>
+                                <img src="<%= form.image %>" alt="<%= form.title %>" class="game-image">
+                            <% } %>
+                            <h3><%= form.title %></h3>
+                            <p><%= form.question_count %> preguntas</p>
+                            
+                            <% if (form.has_active_game) { %>
+                                <div class="players-count"><%= form.active_game.player_count %> jugadores</div>
+                                <div class="game-code">Código: <%= form.active_game.code %></div>
+                                <div class="game-actions">
+                                    <a href="/game/<%= form.active_game.game_id %>/host" class="btn">Administrar</a>
+                                    <a href="/game/<%= form.active_game.game_id %>/end" class="btn danger">Finalizar</a>
+                                </div>
+                            <% } else { %>
+                                <div class="game-actions">
+                                    <a href="/game/<%= form.form_id %>/create" class="btn">Crear Juego</a>
+                                </div>
+                            <% } %>
+                        </div>
+                    <% }); %>
+                </div>
+
+                <% if (forms.length === 0) { %>
+                    <div class="empty-state">
+                        <p>No tienes juegos disponibles. Crea un formulario con preguntas primero.</p>
+                        <a href="/forms/new" class="btn new-game-btn">Crear Nuevo Formulario</a>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+    </main>
+    <img src="/img/shape.png" alt="" class="shape"/>
+</body>
+</html>

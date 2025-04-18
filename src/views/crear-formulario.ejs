@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear nuevo formulario | Kahoot!</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+
+<style>
+    .btn{
+        display: inline-block;
+        padding: 10px;
+        color:#fff !important;
+        background-color: var(--mainColor);
+        border-radius: 10px;
+        text-transform: none;
+        transition: 0.3s;
+    }
+
+    
+</style>
+<body>
+    <main>
+        <div class="big-wrapper" id="all">
+            <img src="/img/shape.png" alt="" class="shape">
+            
+            <header>
+                <div class="container">
+                    <div class="logo">
+                        <img src="/img/logo.png" alt="Logo">
+                        <h3>Kahoot</h3>
+                    </div>
+                    <div class="links">
+                        <ul>
+                            <li><a href="/main" class="btn">Cancelar</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </header>
+
+            <div class="form-create-container">
+                <div class="form-create-card">
+                    <h2>Crear nuevo quiz</h2>
+                    
+                    <form action="/forms/create" method="POST" enctype="multipart/form-data" id="createForm">
+                        <div class="form-group">
+                            <label for="title">Nombre del quiz:</label>
+                            <input type="text" id="title" name="title" class="form-input" required>
+                        </div>
+                        
+                        <!-- <div class="form-group">
+                            <label for="imageSelect">Selecciona una imagen:</label>
+                            <div id="imageGallery" class="image-gallery"></div>
+                            <input type="hidden" name="formImage" id="selectedImage">
+                        </div>                         -->
+                        
+                        <div class="form-group checkbox-group">
+                            <input type="checkbox" id="isPublic" name="isPublic" class="form-checkbox">
+                            <label for="isPublic">Público</label>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">Crear formulario</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Vista previa de la imagen
+        document.getElementById('image').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            const preview = document.getElementById('imagePreview');
+            
+            preview.innerHTML = '';
+            
+            if (file) {
+                if (!file.type.match('image.*')) {
+                    preview.innerHTML = '<p class="error">El archivo debe ser una imagen</p>';
+                    return;
+                }
+                
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const img = document.createElement('img');
+                    img.src = event.target.result;
+                    preview.appendChild(img);
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
+</body>
+</html>
